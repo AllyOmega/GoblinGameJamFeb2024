@@ -1,7 +1,7 @@
 local pd <const> = playdate
 local gfx <const> = pd.graphics
 
-class('Player').extends(gfx.sprite)
+class('Shadow').extends(gfx.sprite)
 local floor = math.floor
 
 local leftArmImage = gfx.image.new('images/leftArm')
@@ -14,63 +14,73 @@ local sleeveRight = gfx.sprite.new()
 local pantLegLeft = gfx.sprite.new()
 local pantLegRight = gfx.sprite.new()
 
-local leftArm = Player(x, y)
-local rightArm = Player(x, y)
-local leftLeg = Player(x, y)
-local rightLeg = Player(x, y)
+local leftArm = Shadow(x, y)
+local rightArm = Shadow(x, y)
+local leftLeg = Shadow(x, y)
+local rightLeg = Shadow(x, y)
 
-function Player:init(x, y)
+local scaleVal = 0.083
+
+function Shadow:init(x, y)
    
     leftArm:setImage(leftArmImage)
     leftArm:setCenter(.35, 1)
     leftArm:setZIndex(32767)
-	leftArm:moveTo(x - 50, y)
+	leftArm:moveTo(x - 10, y)
     leftArm:add()
+    leftArm:setScale(scaleVal)
     sleeveLeft:moveTo(x - 50,y + 3)
     sleeveLeft:setCenter(.5,1)
     sleeveLeft:setZIndex(32767)
     sleeveLeft.imagetable = gfx.imagetable.new('images/sleeves')
     sleeveLeft.animation = gfx.animation.loop.new(100, sleeveLeft.imagetable, true)
+    sleeveLeft:setScale(scaleVal)
     sleeveLeft:add()
     
 
     rightArm:setImage(rightArmImage)
     rightArm:setCenter(.75, 1)
     rightArm:setZIndex(32767)
-	rightArm:moveTo(x + 50, y)
+	rightArm:moveTo(x + 10, y)
     rightArm:add()
-    sleeveRight:moveTo(x + 50, y + 3)
+    rightArm:setScale(0.5)
+    sleeveRight:moveTo(x+10, y)
     sleeveRight:setZIndex(32767)
     sleeveRight:setCenter(.65,1)
     sleeveRight.imagetable = gfx.imagetable.new('images/sleeves')
     sleeveRight.animation = gfx.animation.loop.new(100, sleeveRight.imagetable, true)
     sleeveRight:add()
+    sleeveRight:setScale(0.5)
 
 
     leftLeg:setImage(leftLegImage)
     leftLeg:setCenter(.6, 0)
     leftLeg:setZIndex(32767)
-	leftLeg:moveTo(x - 50, y + 50)
+	leftLeg:moveTo(x - 10, y + 10)
     leftLeg:add()
-    pantLegLeft:moveTo(x - 50, y + 50)
+    leftLeg:setScale(0.5)
+    pantLegLeft:moveTo(x - 10, y + 10)
     pantLegLeft:setZIndex(32767)
     pantLegLeft:setCenter(.25,0)
     pantLegLeft.imagetable = gfx.imagetable.new('images/pantleg')
     pantLegLeft.animation = gfx.animation.loop.new(100, pantLegLeft.imagetable, true)
     pantLegLeft:add()
+    pantLegLeft:setScale(0.5)
     
 
     rightLeg:setImage(rightLegImage)
     rightLeg:setCenter(.4, 0)
     rightLeg:setZIndex(32767)
-	rightLeg:moveTo(x + 50, y + 50)
+	rightLeg:moveTo(x + 10, y + 10)
     rightLeg:add()
-    pantLegRight:moveTo(x + 50, y + 50)
+    rightLeg:setScale(0.5)
+    pantLegRight:moveTo(x + 10, y + 10)
     pantLegRight:setZIndex(32767)
     pantLegRight:setCenter(.8,0)
     pantLegRight.imagetable = gfx.imagetable.new('images/pantleg')
     pantLegRight.animation = gfx.animation.loop.new(100, pantLegRight.imagetable, true)
     pantLegRight:add()
+    pantLegRight:setScale(0.5)
 
 
     local leftArmPos = math.random(1,360)
@@ -91,7 +101,14 @@ function Player:init(x, y)
 
 end
 
-function Player:update()
+function Shadow:setValScale(num)
+    scaleVal = num
+end
+function Shadow:getValScale()
+    return scaleVal
+end
+
+function Shadow:update()
 
     sleeveLeft:setImage(sleeveLeft.animation:image())
     sleeveRight:setImage(sleeveRight.animation:image())
@@ -99,6 +116,15 @@ function Player:update()
     pantLegRight:setImage(pantLegRight.animation:image())
 
     local crank_angle = floor(pd.getCrankPosition())
+
+    leftArm:setScale(scaleVal)
+    sleeveLeft:setScale(scaleVal)
+    rightArm:setScale(scaleVal)
+    sleeveRight:setScale(scaleVal)
+    leftLeg:setScale(scaleVal)
+    pantLegLeft:setScale(scaleVal)
+    rightLeg:setScale(scaleVal)
+    pantLegRight:setScale(scaleVal)
 
     if (pd.buttonIsPressed(pd.kButtonUp) and (pd.buttonIsPressed(pd.kButtonLeft))) then
         leftArm:setRotation(crank_angle)
@@ -116,5 +142,6 @@ function Player:update()
         rightLeg:setRotation(crank_angle)
         pantLegRight:setRotation(crank_angle)
     end
+
 end
 

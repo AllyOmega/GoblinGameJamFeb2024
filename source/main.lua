@@ -9,6 +9,8 @@ import 'CoreLibs/frameTimer'
 
 import "cloud"
 import "player"
+import "score"
+import "shadow"
 
 local pd <const> = playdate
 local gfx <const> = pd.graphics
@@ -36,6 +38,15 @@ turnCount = 100
 local speedLineUpdateCounter = 0
 local speedLineUpdateFrequency = 3 
 local speedLineVariations = {} 
+
+local gScore = Score()
+gScore:setZIndex(32600)
+gScore:addSprite()
+
+gScore:setScore(0)
+
+
+
 
 mainCloud = Cloud(centerX,centerY, 1)
 altClouds = {
@@ -76,10 +87,12 @@ function speedLines()
 end
 
 Player(centerX, centerY)
+local shadow = Shadow(centerX, centerY)
 
 function pd.update()
 	gfx.clear()
 	gfx.sprite.update()
+	
 	--pd.timer.updateTimers()
 	pd.frameTimer.updateTimers()
 
@@ -164,16 +177,23 @@ function pd.update()
 	gfx.fillRoundRect(280, 5, 115, 230, 10) 
 	gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
 	gfx.drawText("Score:", 310, 130)
-	gfx.drawText("500", 320, 160)
+	gScore:draw(320, 160)
 
     turnCount -= 5
     turnCount %= 100
 
+	if turnCount % 10 == 0 then
+		gScore:addOne()
+	end 
+
 	if turnCount % 5 == 0 then
-		if mainCloud:getScale() >= 7.6 then
+		if mainCloud:getScale() >= 12 then
 			mainCloud:setScale(.5)
+			shadow:setValScale(.05)
+			gScore:setScore(gScore:getScore()+100)
 		else
 			mainCloud:setScale(mainCloud:getScale()*1.01)
+			shadow:setValScale(shadow:getValScale()*1.01)
 		end
 
 		for i = 1, #altClouds do
@@ -192,6 +212,7 @@ function pd.update()
 		end
 	end
 	mainCloud:moveTo(centerX-mainCloud.width/2, centerY-mainCloud.width/2)
+	shadow:setScale(5)
 
 
 	--altClouds[1]:moveTo(altCenterX-altClouds[1].width/2, altCenterY-altClouds[1].width/2)
