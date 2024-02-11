@@ -32,8 +32,12 @@ local rightLegPosX = 0
 local rightLegPosY = 0
 
 
-
 local scaleVal = 0.083
+
+local leftArmPos =  0
+local rightArmPos = 0
+local leftLegPos =  0
+local rightLegPos = 0
 
 function Shadow:init(x, y)
    
@@ -57,14 +61,14 @@ function Shadow:init(x, y)
     rightArm:setZIndex(32767)
 	rightArm:moveTo(x, y)
     rightArm:add()
-    rightArm:setScale(0.5)
+    rightArm:setScale(scaleVal)
     sleeveRight:moveTo(x, y)
     sleeveRight:setZIndex(32767)
     sleeveRight:setCenter(.65,1)
     sleeveRight.imagetable = gfx.imagetable.new('images/sleeves')
     sleeveRight.animation = gfx.animation.loop.new(100, sleeveRight.imagetable, true)
     sleeveRight:add()
-    sleeveRight:setScale(0.5)
+    sleeveRight:setScale(scaleVal)
 
 
     leftLeg:setImage(leftLegImage)
@@ -72,14 +76,14 @@ function Shadow:init(x, y)
     leftLeg:setZIndex(32767)
 	leftLeg:moveTo(x, y)
     leftLeg:add()
-    leftLeg:setScale(0.5)
+    leftLeg:setScale(scaleVal)
     pantLegLeft:moveTo(x, y)
     pantLegLeft:setZIndex(32767)
     pantLegLeft:setCenter(.25,0)
     pantLegLeft.imagetable = gfx.imagetable.new('images/pantleg')
     pantLegLeft.animation = gfx.animation.loop.new(100, pantLegLeft.imagetable, true)
     pantLegLeft:add()
-    pantLegLeft:setScale(0.5)
+    pantLegLeft:setScale(scaleVal)
     
 
     rightLeg:setImage(rightLegImage)
@@ -87,14 +91,30 @@ function Shadow:init(x, y)
     rightLeg:setZIndex(32767)
 	rightLeg:moveTo(x, y)
     rightLeg:add()
-    rightLeg:setScale(0.5)
+    rightLeg:setScale(scaleVal)
     pantLegRight:moveTo(x, y)
     pantLegRight:setZIndex(32767)
     pantLegRight:setCenter(.8,0)
     pantLegRight.imagetable = gfx.imagetable.new('images/pantleg')
     pantLegRight.animation = gfx.animation.loop.new(100, pantLegRight.imagetable, true)
     pantLegRight:add()
-    pantLegRight:setScale(0.5)
+    pantLegRight:setScale()
+
+    leftArmPos = math.random(1,360)
+    leftArm:setRotation(leftArmPos)
+    sleeveLeft:setRotation(leftArmPos)
+    
+    rightArmPos = math.random(1,360)
+    rightArm:setRotation(rightArmPos)
+    sleeveRight:setRotation(rightArmPos)
+    
+    leftLegPos = math.random(1,360)
+    leftLeg:setRotation(leftLegPos)
+    pantLegLeft:setRotation(leftLegPos)
+    
+    rightLegPos = math.random(1,360)
+    rightLeg:setRotation(rightLegPos)
+    pantLegRight:setRotation(rightLegPos)
 
 
     leftArmPosX = x
@@ -109,25 +129,51 @@ function Shadow:init(x, y)
     rightLegPosX = x
     rightLegPosY = y
 
+    
+
 end
 
-function Shadow:setVals()
-    leftArmPosX -= 0.2
-    leftArmPosY -= 0.1
+function Shadow:resetRotPos() 
+    leftArmPos = 50 --math.random(1,360)
+    leftArm:setRotation(leftArmPos)
+    sleeveLeft:setRotation(leftArmPos)
+    
+    rightArmPos = 50 
+    rightArm:setRotation(rightArmPos)
+    sleeveRight:setRotation(rightArmPos)
+    
+    leftLegPos = 50 
+    leftLeg:setRotation(leftLegPos)
+    pantLegLeft:setRotation(leftLegPos)
+    
+    rightLegPos = 50
+    rightLeg:setRotation(rightLegPos)
+    pantLegRight:setRotation(rightLegPos)
+end
 
-    rightArmPosX += 0.2
-    rightArmPosY -= 0.1
 
-    leftLegPosX -= 0.2
-    leftLegPosY += 0.1
+function Shadow:setVals(x,y)
+    leftArmPosX -= x
+    leftArmPosY -= y
 
-    rightLegPosX += 0.2
-    rightLegPosY += 0.1
+    rightArmPosX += x
+    rightArmPosY -= y
+
+    leftLegPosX -= x
+    leftLegPosY += y
+
+    rightLegPosX += x
+    rightLegPosY += y
 end
 
 function Shadow:setValReset(x,y)
     leftArmPosX, rightArmPosX, leftLegPosX, rightLegPosX = x, x, x, x
     leftArmPosY, rightArmPosY, leftLegPosY, rightLegPosY = y, y, y, y
+    self:resetRotPos()
+end
+
+function Shadow:getPos() 
+    return {leftArmPos, rightArmPos, leftLegPos, rightLegPos}
 end
 
 function Shadow:setValScale(num)
@@ -145,6 +191,7 @@ function Shadow:update()
     pantLegRight:setImage(pantLegRight.animation:image())
 
     local crank_angle = floor(pd.getCrankPosition())
+
 
     leftArm:setScale(scaleVal)
     sleeveLeft:setScale(scaleVal)
@@ -167,24 +214,6 @@ function Shadow:update()
     rightLeg:moveTo(rightLegPosX, rightLegPosY)
     pantLegRight:moveTo(rightLegPosX, rightLegPosY)
 
-
-
-    if (pd.buttonIsPressed(pd.kButtonUp) and (pd.buttonIsPressed(pd.kButtonLeft))) then
-        leftArm:setRotation(crank_angle)
-        sleeveLeft:setRotation(crank_angle)
-   end
-    if (pd.buttonIsPressed(pd.kButtonUp) and (pd.buttonIsPressed(pd.kButtonRight))) then
-        rightArm:setRotation(crank_angle)
-        sleeveRight:setRotation(crank_angle)
-    end
-    if (pd.buttonIsPressed(pd.kButtonDown) and (pd.buttonIsPressed(pd.kButtonLeft))) then
-        leftLeg:setRotation(crank_angle)
-        pantLegLeft:setRotation(crank_angle)
-    end
-    if (pd.buttonIsPressed(pd.kButtonDown) and (pd.buttonIsPressed(pd.kButtonRight))) then
-        rightLeg:setRotation(crank_angle)
-        pantLegRight:setRotation(crank_angle)
-    end
 
 end
 

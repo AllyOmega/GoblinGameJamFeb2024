@@ -24,6 +24,11 @@ local rightLeg = Player(x, y)
 
 local scaler = 1.01
 
+local leftArmPos = 0
+local rightArmPos = 0
+local leftLegPos = 0 
+local rightLegPos = 0
+
 function Player:init(x, y)
    
     leftArm:setImage(leftArmImage)
@@ -92,24 +97,29 @@ function Player:init(x, y)
     -- hair.animation = gfx.animation.loop.new(100, hair.imagetable, true)
     -- hair:add()
 
-    local leftArmPos = math.random(1,360)
+    leftArmPos = math.random(1,360)
     leftArm:setRotation(leftArmPos)
     sleeveLeft:setRotation(leftArmPos)
     
-    local rightArmPos = math.random(1,360)
+    rightArmPos = math.random(1,360)
     rightArm:setRotation(rightArmPos)
     sleeveRight:setRotation(rightArmPos)
     
-    local leftLegPos = math.random(1,360)
+    leftLegPos = math.random(1,360)
     leftLeg:setRotation(leftLegPos)
     pantLegLeft:setRotation(leftLegPos)
     
-    local rightLegPos = math.random(1,360)
+    rightLegPos = math.random(1,360)
     rightLeg:setRotation(rightLegPos)
     pantLegRight:setRotation(rightLegPos)
 
 
 end
+
+function Player:getPos() 
+    return {leftArmPos, rightArmPos, leftLegPos, rightLegPos}
+end
+
 
 function Player:update()
 
@@ -126,18 +136,23 @@ function Player:update()
     if (pd.buttonIsPressed(pd.kButtonUp) and (pd.buttonIsPressed(pd.kButtonLeft))) then
         leftArm:setRotation(crank_angle)
         sleeveLeft:setRotation(crank_angle)
+        leftArmPos = crank_angle
    end
     if (pd.buttonIsPressed(pd.kButtonUp) and (pd.buttonIsPressed(pd.kButtonRight))) then
         rightArm:setRotation(crank_angle)
         sleeveRight:setRotation(crank_angle)
+        rightArmPos = crank_angle
     end
     if (pd.buttonIsPressed(pd.kButtonDown) and (pd.buttonIsPressed(pd.kButtonLeft))) then
         leftLeg:setRotation(crank_angle)
         pantLegLeft:setRotation(crank_angle)
+        leftLegPos = crank_angle
+
     end
     if (pd.buttonIsPressed(pd.kButtonDown) and (pd.buttonIsPressed(pd.kButtonRight))) then
         rightLeg:setRotation(crank_angle)
         pantLegRight:setRotation(crank_angle)
+        rightLegPos = crank_angle
     end
 end
 
