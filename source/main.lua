@@ -220,8 +220,7 @@ function pd.update()
 		-- 	-- Use these midpoints as the tips for the filled triangles
 		-- 	gfx.fillTriangle(edgeX, edgeY, midX1, midY1, midX2, midY2)
     
-    local numberOfSpeedLines = s
-    s * 1.5  -- Adjust for more or fewer lines
+    local numberOfSpeedLines = numberOfTriangles * 1.5  -- Adjust for more or fewer lines
 		local speedLineLength = outerCircleRadius  -- Length of each speed line
 		
 		if speedLineUpdateCounter % speedLineUpdateFrequency == 0 then
@@ -338,7 +337,8 @@ function pd.update()
 				end
 			end
 		end
-		mainCloud:moveTo(centerX-mainCloud.width/2, centerY-mainCloud.width/2)
+
+		mainCloud:moveTo(centerX-mainCloud.width/2, centerY+30 - mainCloud.width/2)
 		shadow:setScale(5)
 
 
