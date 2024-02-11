@@ -21,9 +21,12 @@ local currentState = kGameState.initial
 
 local kGameInitialState, kGameGetReadyState, kGamePlayingState, kGamePausedState, kGameOverState = 0, 1, 2, 3, 4
 local gameState = kGameInitialState
-
 --
 
+local maxBackgroundPlanes = 1
+local backgroundPlaneCount = 0
+local bgY = 0
+local bgH = 0
 
 local playerX, playerY = 200, 120
 local playerRadius = 10
@@ -81,6 +84,78 @@ altClouds = {
 	Cloud(centerX+30, centerY, 0)
 }
 
+
+-- local function createBackgroundSprite()
+
+-- 	local bg = gfx.sprite.new()
+-- 	local bgImg = gfx.image.new('images/background')
+-- 	local w, h = bgImg:getSize()
+-- 	bgH = h
+-- 	bg:setBounds(0, 0, 400, 240)
+
+-- 	function bg:draw(x, y, width, height)
+-- 		bgImg:draw(0, bgY)
+-- 		bgImg:draw(0, bgY-bgH)
+
+-- 	end
+
+-- 	function bg:update()
+-- 		bgY += 1
+-- 		if bgY > bgH then
+-- 			bgY = 0
+-- 		end
+-- 		self:markDirty()
+-- 	end
+
+-- 	bg:setZIndex(0)
+-- 	bg:add()
+-- end
+
+local function createBackgroundPlane()
+
+	local plane = gfx.sprite.new()
+	local planeImg
+	local planeRot = math.random(360)
+
+	planeImg = gfx.image.new('images/plane1')
+
+	local w, h = planeImg:getSize()
+	plane:setImage(planeImg)
+	plane:setRotation(planeRot - 90)
+	plane:moveTo(math.random(400), -math.random(70))
+	plane:add()
+
+	backgroundPlaneCount += 1
+
+	local planeRotRad = math.rad(planeRot)
+
+	function plane:update()
+
+		local newY = plane.y + (2*math.sin(planeRotRad))
+		local newX = plane.x + (2*math.cos(planeRotRad))
+
+		if newY > 400 + h or newY < 0 - h then
+			plane:remove()
+			backgroundPlaneCount -= 1
+		else
+			plane:moveTo(newX, newY)
+		end
+	end
+
+
+	plane:setZIndex(math.random(100))
+	return plane
+end
+
+local function spawnBackgroundPlaneIfNeeded()
+	if backgroundPlaneCount < maxBackgroundPlanes then
+		if math.random(math.floor(120/maxBackgroundPlanes)) == 1 then
+			createBackgroundPlane()
+		end
+	end
+end
+
+
 local function gameOver()
 
 	gameState = kGameOverState
@@ -95,7 +170,6 @@ local function startGame()
 	gameState = kGameGetReadyState
 	ticks = 0
 	gScore:setScore(0)
-
 	titleSprite:setImage(gfx.image.new('images/getReady'))
 	titleSprite:moveTo(centerX, centerY)
 	titleSprite:setZIndex(32767)
@@ -144,7 +218,7 @@ local player = Player(centerX, centerY)
 local shadow = Shadow(centerX, centerY + 30)
 
 function pd.update()
-
+	
 	ticks = ticks+1
 
 	if gameState == kGameInitialState then 
@@ -171,10 +245,10 @@ function pd.update()
 		end
 	elseif gameState == kGamePlayingState then
 		
-	
 		spritelib.update()
 		pd.frameTimer.updateTimers()
 
+		spawnBackgroundPlaneIfNeeded()
 		if turnCount % turbSpeed == 0 then
 			altCenterX = centerX + turbVal*math.random()*randNegative()
 			altCenterY = centerY + turbVal*math.random()*randNegative()
@@ -373,7 +447,9 @@ function playdate.AButtonDown()
 	if gameState == kGameInitialState then
 		buttonDown = true
 	elseif gameState == kGameOverState and ticks > 5  then	-- the ticks thing is just so the player doesn't accidentally restart immediately
+		
 		startGame()
+
 	elseif gameState == kGamePlayingState then
 		--flippy:up()		
 	end
