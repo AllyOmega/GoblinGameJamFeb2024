@@ -8,16 +8,19 @@ local leftArmImage = gfx.image.new('images/leftArm')
 local rightArmImage = gfx.image.new('images/rightArm')
 local leftLegImage = gfx.image.new('images/leftLeg')
 local rightLegImage = gfx.image.new('images/rightLeg')
+local playerBodyImage = gfx.image.new('images/playerBody')
 
 local sleeveLeft = gfx.sprite.new()
 local sleeveRight = gfx.sprite.new()
 local pantLegLeft = gfx.sprite.new()
 local pantLegRight = gfx.sprite.new()
+local hair = gfx.sprite.new()
 
 local leftArm = Player(x, y)
 local rightArm = Player(x, y)
 local leftLeg = Player(x, y)
 local rightLeg = Player(x, y)
+local playerBody = Player(x, y)
 
 function Player:init(x, y)
    
@@ -50,9 +53,9 @@ function Player:init(x, y)
     leftLeg:setImage(leftLegImage)
     leftLeg:setCenter(.6, 0)
     leftLeg:setZIndex(32767)
-	leftLeg:moveTo(x - 50, y + 50)
+	leftLeg:moveTo(x - 25, y + 50)
     leftLeg:add()
-    pantLegLeft:moveTo(x - 50, y + 50)
+    pantLegLeft:moveTo(x - 25, y + 50)
     pantLegLeft:setZIndex(32767)
     pantLegLeft:setCenter(.25,0)
     pantLegLeft.imagetable = gfx.imagetable.new('images/pantleg')
@@ -63,15 +66,29 @@ function Player:init(x, y)
     rightLeg:setImage(rightLegImage)
     rightLeg:setCenter(.4, 0)
     rightLeg:setZIndex(32767)
-	rightLeg:moveTo(x + 50, y + 50)
+	rightLeg:moveTo(x + 25, y + 50)
     rightLeg:add()
-    pantLegRight:moveTo(x + 50, y + 50)
+    pantLegRight:moveTo(x + 25, y + 50)
     pantLegRight:setZIndex(32767)
     pantLegRight:setCenter(.8,0)
     pantLegRight.imagetable = gfx.imagetable.new('images/pantleg')
     pantLegRight.animation = gfx.animation.loop.new(100, pantLegRight.imagetable, true)
     pantLegRight:add()
 
+
+    playerBody:setImage(playerBodyImage)
+    playerBody:setCenter(.5,.5)
+    playerBody:setZIndex(32767)
+	playerBody:moveTo(x, y)
+    playerBody:add()
+
+
+    hair:moveTo(x , y - 40)
+    hair:setCenter(.5,1)
+    hair:setZIndex(32767)
+    hair.imagetable = gfx.imagetable.new('images/hair')
+    hair.animation = gfx.animation.loop.new(100, hair.imagetable, true)
+    hair:add()
 
     local leftArmPos = math.random(1,360)
     leftArm:setRotation(leftArmPos)
@@ -89,6 +106,12 @@ function Player:init(x, y)
     rightLeg:setRotation(rightLegPos)
     pantLegRight:setRotation(rightLegPos)
 
+
+
+
+
+
+
 end
 
 function Player:update()
@@ -97,8 +120,10 @@ function Player:update()
     sleeveRight:setImage(sleeveRight.animation:image())
     pantLegLeft:setImage(pantLegLeft.animation:image())
     pantLegRight:setImage(pantLegRight.animation:image())
+    hair:setImage(hair.animation:image())
 
-    local crank_angle = floor(pd.getCrankPosition())
+
+    local crank_angle = pd.getCrankPosition()
 
     if (pd.buttonIsPressed(pd.kButtonUp) and (pd.buttonIsPressed(pd.kButtonLeft))) then
         leftArm:setRotation(crank_angle)
