@@ -50,14 +50,14 @@ local speedLineUpdateFrequency = 3
 local speedLineVariations = {}
 
 local gScore = Score()
-gScore:setZIndex(32600)
+gScore:setZIndex(32767)
 gScore:addSprite()
 
 local spritelib = gfx.sprite
 local titleSprite = spritelib.new()
 titleSprite:setImage(gfx.image.new('images/getReady'))
 titleSprite:moveTo(centerX, centerY)
-titleSprite:setZIndex(4000)
+titleSprite:setZIndex(32767)
 titleSprite:addSprite()
 
 
@@ -150,6 +150,7 @@ function pd.update()
 		
 		end
 		startButton:draw(centerX - startButton.width/2, y)
+		gfx.setColor(gfx.kColorBlack)
 
 	elseif gameState == kGameGetReadyState then
 
@@ -163,7 +164,6 @@ function pd.update()
 		
 		gfx.clear()
 		spritelib.update()
-		gfx.sprite.update()
 		--pd.timer.updateTimers()
 		pd.frameTimer.updateTimers()
 
@@ -237,7 +237,8 @@ function pd.update()
 			
 			gfx.drawLine(startX, startY, endX, endY)
 		end
-
+		
+		gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
 		gfx.fillRoundRect(280, 5, 115, 230, 10)
 		gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
 		gfx.drawText("Score:", 310, 130)
