@@ -1,12 +1,24 @@
+import "CoreLibs/object"
 import "CoreLibs/graphics"
-import 'CoreLibs/frameTimer'
+import "CoreLibs/sprites"
+import "CoreLibs/timer"
 import 'CoreLibs/easing'
-import 'CoreLibs/sprites'
+import 'CoreLibs/animation'
+import 'CoreLibs/frameTimer'
+
+
 import "cloud"
+import "player"
 
 local pd <const> = playdate
 local gfx <const> = pd.graphics
 
+Player(60,120)
+
+function pd.update()
+	gfx.sprite.update()
+	pd.timer.updateTimers()
+	playdate.frameTimer.updateTimers()
 local playerX, playerY = 200, 120
 local playerRadius = 10
 local playerSpeed = 3
