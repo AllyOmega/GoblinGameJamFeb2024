@@ -13,12 +13,6 @@ import "player"
 local pd <const> = playdate
 local gfx <const> = pd.graphics
 
-Player(60,120)
-
-function pd.update()
-	gfx.sprite.update()
-	pd.timer.updateTimers()
-	playdate.frameTimer.updateTimers()
 local playerX, playerY = 200, 120
 local playerRadius = 10
 local playerSpeed = 3
@@ -81,6 +75,7 @@ function speedLines()
 
 end
 
+Player(centerX, centerY)
 
 function pd.update()
 	gfx.clear()
@@ -100,10 +95,10 @@ function pd.update()
 
 
 
-	for i = 0, 20, 10 do
-		gfx.drawCircleAtPoint(centerX, centerY, outerCircleRadius + 50 - turnCount - i)
+	-- for i = 0, 20, 10 do
+	-- 	gfx.drawCircleAtPoint(centerX, centerY, outerCircleRadius + 50 - turnCount - i)
 		
-	end
+	-- end
 
     -- gfx.fillCircleAtPoint(centerX, centerY, centralCircleRadius)
     -- gfx.drawCircleAtPoint(altCenterX, altCenterY, outerCircleRadius)
