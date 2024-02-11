@@ -184,16 +184,20 @@ function pd.update()
 
 	if turnCount % 10 == 0 then
 		gScore:addOne()
+		shadow.setVals()
 	end 
 
 	if turnCount % 5 == 0 then
 		if mainCloud:getScale() >= 12 then
 			mainCloud:setScale(.5)
-			shadow:setValScale(.05)
+			shadow:setValScale(.02)
+			shadow:setValReset(centerX, centerY)
 			gScore:setScore(gScore:getScore()+100)
 		else
 			mainCloud:setScale(mainCloud:getScale()*1.01)
 			shadow:setValScale(shadow:getValScale()*1.01)
+
+			
 		end
 
 		for i = 1, #altClouds do

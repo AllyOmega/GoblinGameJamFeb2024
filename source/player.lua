@@ -22,6 +22,8 @@ local leftLeg = Player(x, y)
 local rightLeg = Player(x, y)
 local playerBody = Player(x, y)
 
+local scaler = 1.01
+
 function Player:init(x, y)
    
     leftArm:setImage(leftArmImage)
@@ -76,11 +78,11 @@ function Player:init(x, y)
     pantLegRight:add()
 
 
-    playerBody:setImage(playerBodyImage)
-    playerBody:setCenter(.5,.5)
-    playerBody:setZIndex(32767)
-	playerBody:moveTo(x, y)
-    playerBody:add()
+    -- playerBody:setImage(playerBodyImage)
+    -- playerBody:setCenter(.5,.5)
+    -- playerBody:setZIndex(32767)
+	-- playerBody:moveTo(x, y)
+    -- playerBody:add()
 
 
     hair:moveTo(x , y - 40)
