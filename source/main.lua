@@ -62,9 +62,9 @@ gScore:addSprite()
 
 local spritelib = gfx.sprite
 local titleSprite = spritelib.new()
-titleSprite:setImage(gfx.image.new('images/getReady'))
-titleSprite:moveTo(centerX, centerY)
-titleSprite:setZIndex(32767)
+--titleSprite:setImage(gfx.image.new('images/getReady'))
+-- titleSprite:moveTo(centerX, centerY)
+-- titleSprite:setZIndex(32767)
 titleSprite:addSprite()
 
 
@@ -84,8 +84,8 @@ altClouds = {
 local function gameOver()
 
 	gameState = kGameOverState
-	titleSprite:setImage(gfx.image.new('images/gameOver'))
-	titleSprite:setVisible(true)
+	gfx.setImageDrawMode(gfx.kDrawModeCopy)
+	gfx.image.new('images/gameOver'):draw(centerX-75, centerY-20)
 	ticks=0
 
 end
@@ -97,19 +97,21 @@ local function startGame()
 	gScore:setScore(0)
 
 	titleSprite:setImage(gfx.image.new('images/getReady'))
+	titleSprite:moveTo(centerX, centerY)
+	titleSprite:setZIndex(32767)
 	titleSprite:setVisible(true)
 		
 end
 
-function pd.gameWillPause()
+-- function pd.gameWillPause()
 	
-	local img = gfx.image.new('menuImage')
+-- 	-- local img = gfx.image.new('menuImage')
 
-	gfx.lockFocus(img)
-	gfx.setFont(gScore.scoreFont)
-	gfx.drawTextAligned(gScore.score, 200, 6, kTextAlignment.right)
+-- 	gfx.lockFocus(img)
+-- 	gfx.setFont(gScore.scoreFont)
+-- 	gfx.drawTextAligned(gScore.score, 200, 6, kTextAlignment.right)
 
-end
+-- end
 
 
 -- Function to update speed line variations
@@ -169,9 +171,8 @@ function pd.update()
 		end
 	elseif gameState == kGamePlayingState then
 		
-		gfx.clear()
+	
 		spritelib.update()
-		--pd.timer.updateTimers()
 		pd.frameTimer.updateTimers()
 
 		if turnCount % turbSpeed == 0 then
@@ -219,108 +220,100 @@ function pd.update()
 		
 		-- 	-- Use these midpoints as the tips for the filled triangles
 		-- 	gfx.fillTriangle(edgeX, edgeY, midX1, midY1, midX2, midY2)
-    
-    local numberOfSpeedLines = numberOfTriangles * 1.5  -- Adjust for more or fewer lines
+	
+		local numberOfSpeedLines = numberOfTriangles * 1.5  -- Adjust for more or fewer lines
 		local speedLineLength = outerCircleRadius  -- Length of each speed line
 		
 		if speedLineUpdateCounter % speedLineUpdateFrequency == 0 then
 			updateSpeedLineVariations(numberOfSpeedLines, speedLineLength)
 		end
 		speedLineUpdateCounter += 1
-    
-    -- Drawing speed lines with current variations
-    for i = 1, numberOfSpeedLines do
-        local variation = speedLineVariations[i] or {offsetX = 0, offsetY = 0, length = speedLineLength}
-        local angle = (math.pi * 2) * (i / numberOfSpeedLines)
-        
-        -- Apply variations
-        local startX = altCenterX + (outerCircleRadius + variation.offsetX) * math.cos(angle)
-        local startY = altCenterY + (outerCircleRadius + variation.offsetY) * math.sin(angle)
-        local endX = startX + variation.length * math.cos(angle)
-        local endY = startY + variation.length * math.sin(angle)
-        
-        gfx.drawLine(startX, startY, endX, endY)
-    end
-	
-	gfx.fillRoundRect(280, 5, 115, 230, 10) 
-	gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
-	gfx.drawText(msg, 310, 130)
-	--gfx.drawText(shadStr, 290, 50)
-	--gfx.drawText(playStr, 290, 90)
-	gScore:draw(320, 160)
-
-    turnCount -= 5
-    turnCount %= 100
-
-	if turnCount % 10 == 0 then
-		gScore:addOne()
-		shadow:setVals(shadowMoveX, shadowMoveY)
-		shadowMoveX += 0.0014
-		shadowMoveY += 0.001
-		playStr = ""
-		playerArr = player:getPos()
-		for i = 1, 4 do
-			local playerDegree = playerArr[i]
-
-			playStr = playStr .. tostring(playerDegree) .. " "
+		
+		-- Drawing speed lines with current variations
+		for i = 1, numberOfSpeedLines do
+			local variation = speedLineVariations[i] or {offsetX = 0, offsetY = 0, length = speedLineLength}
+			local angle = (math.pi * 2) * (i / numberOfSpeedLines)
+			
+			-- Apply variations
+			local startX = altCenterX + (outerCircleRadius + variation.offsetX) * math.cos(angle)
+			local startY = altCenterY + (outerCircleRadius + variation.offsetY) * math.sin(angle)
+			local endX = startX + variation.length * math.cos(angle)
+			local endY = startY + variation.length * math.sin(angle)
+			
+			gfx.drawLine(startX, startY, endX, endY)
 		end
-	end 
+		
+		gfx.fillRoundRect(280, 5, 115, 230, 10) 
+		gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
+		gfx.drawText(msg, 310, 130)
+		--gfx.drawText(shadStr, 290, 50)
+		--gfx.drawText(playStr, 290, 90)
+		gScore:draw(320, 160)
 
-	if turnCount % 5 == 0 then
-		if mainCloud:getScale() >= 25 then
+		turnCount -= 5
+		turnCount %= 100
 
-			mainCloud:setScale(.5)
-			shadow:setValScale(.02)
-			
-			shadowMoveX = 0.01
-			shadowMoveY = 0.005
-			
-			
-
-			shadowArr = shadow:getPos()
-			playerArr = player:getPos()
-
-			shadStr = ""
+		if turnCount % 10 == 0 then
+			gScore:addOne()
+			shadow:setVals(shadowMoveX, shadowMoveY)
+			shadowMoveX += 0.0014
+			shadowMoveY += 0.001
 			playStr = ""
-
+			playerArr = player:getPos()
 			for i = 1, 4 do
 				local playerDegree = playerArr[i]
-				local targetDegree = shadowArr[i]
-				
-
-				shadStr = shadStr .. tostring(targetDegree) .. " "
 
 				playStr = playStr .. tostring(playerDegree) .. " "
-				
-			
-				-- Calculate the difference in degrees in a circular way
-				local diff = (playerDegree - targetDegree + 360) % 360
-			
-				-- Check if the difference is within +/- 20 degrees, considering circular conditions
-				if diff <= 20 or diff >= 340 then
-					gScore:setScore(gScore:getScore()+100)
-					
-				else
-					gScore:setScore(0)
-					msg = "Fail!"
-					shadow:setValReset(centerX, centerY + 30)
-					break
-				end
-				
-				msg = "Success!"
-				shadow:setValReset(centerX, centerY + 30)
-
-
-				
-
 			end
+		end
+		if turnCount % 5 == 0 then
+			if mainCloud:getScale() >= 25 then
 
+				mainCloud:setScale(.5)
+				shadow:setValScale(.02)
+				
+				shadowMoveX = 0.01
+				shadowMoveY = 0.005
+				
+				
 
+				shadowArr = shadow:getPos()
+				playerArr = player:getPos()
 
-		else
-			mainCloud:setScale(mainCloud:getScale()*1.01)
-			shadow:setValScale(shadow:getValScale()*1.01)
-    end
+				shadStr = ""
+				playStr = ""
+
+				for i = 1, #playerArr do
+					local playerDegree = playerArr[i]
+					local targetDegree = shadowArr[i]
+					
+
+					shadStr = shadStr .. tostring(targetDegree) .. " "
+
+					playStr = playStr .. tostring(playerDegree) .. " "
+					
+				
+					-- Calculate the difference in degrees in a circular way
+					local diff = (playerDegree - targetDegree + 360) % 360
+				
+					-- Check if the difference is within +/- 20 degrees, considering circular conditions
+					if diff <= 20 or diff >= 340 then
+						gScore:setScore(gScore:getScore()+100)
+						
+					else
+						gScore:setScore(0)
+						--msg = "Fail!"
+						gameOver()
+						shadow:setValReset(centerX, centerY + 30)
+						-- break
+					end
+				end
+				--msg = "Success!"
+				shadow:setValReset(centerX, centerY + 30)
+			else
+				mainCloud:setScale(mainCloud:getScale()*1.01)
+				shadow:setValScale(shadow:getValScale()*1.01)
+			end
 
 			for i = 1, #altClouds do
 				local cloud = altClouds[i]
@@ -341,7 +334,6 @@ function pd.update()
 		mainCloud:moveTo(centerX-mainCloud.width/2, centerY+30 - mainCloud.width/2)
 		shadow:setScale(5)
 
-
 		--altClouds[1]:moveTo(altCenterX-altClouds[1].width/2, altCenterY-altClouds[1].width/2)
 
 		-- Optional: Draw FPS, etc.
@@ -356,10 +348,7 @@ function pd.update()
 
 end
 
-
 -- ! Button Functions
-
-
 
 function playdate.leftButtonDown()
 	if gameState == kGamePlayingState then

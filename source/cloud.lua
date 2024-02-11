@@ -25,7 +25,7 @@ function Cloud:init(x,y, m)
     if m == 0 then
         self:setZIndex(800)
     else
-        self:setZIndex(32766)
+        self:setZIndex(32764)
     end
     self:setCenter(0,0)
     self:setCollideRect(0,0,12,16)
