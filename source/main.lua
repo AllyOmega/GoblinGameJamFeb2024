@@ -23,10 +23,14 @@ local kGameInitialState, kGameGetReadyState, kGamePlayingState, kGamePausedState
 local gameState = kGameInitialState
 --
 
+
+
 local maxBackgroundPlanes = 1
 local backgroundPlaneCount = 0
 local bgY = 0
 local bgH = 0
+
+local gameSpeed = 1.01 -- do NOT change for now, buggy
 
 local playerX, playerY = 200, 120
 local playerRadius = 10
@@ -56,6 +60,8 @@ local speedLineUpdateFrequency = 3
 local speedLineVariations = {}
 
 local msg = "Score:"
+
+local lives = 3
 
 local shadStr, playStr = "", ""
 
@@ -318,7 +324,16 @@ function pd.update()
 		end
 		
 		gfx.fillRoundRect(280, 5, 115, 230, 10) 
+		gfx.setImageDrawMode(gfx.kDrawModeInverted)
+		
+		if lives ~= 0 then
+			for i = 1, lives do
+				gfx.image.new('images/leftArm'):draw(260 + 35*i, 20 )
+			end
+		end
+		
 		gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
+		
 		gfx.drawText(msg, 310, 130)
 		--gfx.drawText(shadStr, 290, 50)
 		--gfx.drawText(playStr, 290, 90)
@@ -329,22 +344,15 @@ function pd.update()
 
 		if turnCount % 10 == 0 then
 			gScore:addOne()
-			shadow:setVals(shadowMoveX, shadowMoveY)
+			shadow:setVals(shadowMoveX, shadowMoveY, gameSpeed)
 			shadowMoveX += 0.0014
 			shadowMoveY += 0.001
-			playStr = ""
-			playerArr = player:getPos()
-			for i = 1, 4 do
-				local playerDegree = playerArr[i]
-
-				playStr = playStr .. tostring(playerDegree) .. " "
-			end
 		end
 		if turnCount % 5 == 0 then
 			if mainCloud:getScale() >= 25 then
 
 				mainCloud:setScale(.5)
-				shadow:setValScale(.02)
+				shadow:setValScale(.02*gameSpeed)
 				
 				shadowMoveX = 0.01
 				shadowMoveY = 0.005
@@ -372,43 +380,47 @@ function pd.update()
 				
 					-- Check if the difference is within +/- 20 degrees, considering circular conditions
 					if diff <= 20 or diff >= 340 then
-						gScore:setScore(gScore:getScore()+100)
 						
+						gScore:setScore(gScore:getScore()+25)
 					else
-						gScore:setScore(0)
+						gScore:setScore(math.max(gScore:getScore() - 200, 0))
 						--msg = "Fail!"
-						gameOver()
+						if lives == 0 then
+							gameOver()
+						else
+							lives -= 1
+						end
 						shadow:setValReset(centerX, centerY + 30)
-						-- break
+						break
 					end
 				end
+				
 				--msg = "Success!"
+				
 				shadow:setValReset(centerX, centerY + 30)
 			else
-				mainCloud:setScale(mainCloud:getScale()*1.01)
-				shadow:setValScale(shadow:getValScale()*1.01)
+				mainCloud:setScale(mainCloud:getScale()*gameSpeed)
+				shadow:setValScale(shadow:getValScale()*gameSpeed)
 			end
 
 			for i = 1, #altClouds do
 				local cloud = altClouds[i]
 				--newX = cloud.x + 2*math.random()*randNegative()
 				--newY = cloud.y + 2*math.random()*randNegative()
-				newX = cloud.x + 0.01*(cloud.x - centerX)
-				newY = cloud.y + 0.01*(cloud.y - centerY)
+				newX = cloud.x + (gameSpeed - 1)*(cloud.x - centerX)
+				newY = cloud.y +(gameSpeed - 1)*(cloud.y - centerY)
 				cloud:moveTo(newX, newY)
 				if cloud:getScale() >= 3.5 then
 					cloud:setScale(.5)
 					cloud:moveTo(centerX + math.random(10,40)*randNegative(), centerY+math.random(10,40)*randNegative())
 				else
-					cloud:setScale(cloud:getScale()*cloud.randGrow)
+					cloud:setScale(cloud:getScale()*(gameSpeed - .01)*cloud.randGrow)
 				end
 			end
 		end
 
 		mainCloud:moveTo(centerX-mainCloud.width/2, centerY+30 - mainCloud.width/2)
 		shadow:setScale(5)
-
-		--altClouds[1]:moveTo(altCenterX-altClouds[1].width/2, altCenterY-altClouds[1].width/2)
 
 		-- Optional: Draw FPS, etc.
 		pd.drawFPS(0, 0)
@@ -447,7 +459,10 @@ function playdate.AButtonDown()
 	if gameState == kGameInitialState then
 		buttonDown = true
 	elseif gameState == kGameOverState and ticks > 5  then	-- the ticks thing is just so the player doesn't accidentally restart immediately
+
 		
+		lives = 3
+
 		startGame()
 
 	elseif gameState == kGamePlayingState then
