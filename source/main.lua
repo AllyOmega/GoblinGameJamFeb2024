@@ -1,19 +1,20 @@
+import "CoreLibs/object"
 import "CoreLibs/graphics"
+import "CoreLibs/sprites"
+import "CoreLibs/timer"
+import 'CoreLibs/frameTimer'
+import 'CoreLibs/easing'
+import 'CoreLibs/animation'
+
+import "player"
 
 local pd <const> = playdate
 local gfx <const> = pd.graphics
 
-local playerX, playerY = 200, 120
-local playerRadius = 10
-local playerSpeed = 3
-
-
+Player(60,120)
 
 function pd.update()
-	gfx.clear()
-	local crankAngle = math.rad(pd.getCrankPosition())
-	playerX += (math.sin(crankAngle) * playerSpeed)
-	playerY -= (math.cos(crankAngle) * playerSpeed)
-	gfx.fillCircleAtPoint(playerX, playerY, playerRadius)
-	pd.drawFPS(0,0) -- FPS widget
+	gfx.sprite.update()
+	pd.timer.updateTimers()
+	playdate.frameTimer.updateTimers()
 end

@@ -1,1 +1,9 @@
 builds/*
+.sentry-native/b3ad4e54-53b6-4355-f357-9e6e24dd3c55.run.lock
+.sentry-native/055e4d90-3b17-4cbc-32cd-d3360fc87d16.run/__sentry-breadcrumb1
+.sentry-native/055e4d90-3b17-4cbc-32cd-d3360fc87d16.run/__sentry-breadcrumb2
+.sentry-native/055e4d90-3b17-4cbc-32cd-d3360fc87d16.run/__sentry-event
+.sentry-native/b3ad4e54-53b6-4355-f357-9e6e24dd3c55.run/__sentry-breadcrumb1
+.sentry-native/b3ad4e54-53b6-4355-f357-9e6e24dd3c55.run/__sentry-breadcrumb2
+.sentry-native/b3ad4e54-53b6-4355-f357-9e6e24dd3c55.run/__sentry-event
+.sentry-native/b3ad4e54-53b6-4355-f357-9e6e24dd3c55.run/session.json
