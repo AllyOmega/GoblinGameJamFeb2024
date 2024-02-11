@@ -30,6 +30,9 @@ local numberOfTriangles = 16
 local turbSpeed = 3
 local turbVal = 10
 
+local shadowMoveX = 0.01
+local shadowMoveY = 0.005
+
 altCenterX = centerX
 altCenterY = centerY
 
@@ -38,6 +41,10 @@ turnCount = 100
 local speedLineUpdateCounter = 0
 local speedLineUpdateFrequency = 3 
 local speedLineVariations = {} 
+
+local msg = "Score:"
+
+local shadStr, playStr = "", ""
 
 local gScore = Score()
 gScore:setZIndex(32600)
@@ -48,7 +55,7 @@ gScore:setScore(0)
 
 
 
-mainCloud = Cloud(centerX,centerY, 1)
+mainCloud = Cloud(centerX,centerY+30, 1)
 altClouds = {
 	Cloud(centerX-30, centerY-20, 0),
 	Cloud(centerX+10, centerY - 20, 0),
@@ -86,8 +93,8 @@ function speedLines()
 
 end
 
-Player(centerX, centerY)
-local shadow = Shadow(centerX, centerY)
+local player = Player(centerX, centerY)
+local shadow = Shadow(centerX, centerY + 30)
 
 function pd.update()
 	gfx.clear()
@@ -173,10 +180,12 @@ function pd.update()
         
         gfx.drawLine(startX, startY, endX, endY)
     end
-
+	
 	gfx.fillRoundRect(280, 5, 115, 230, 10) 
 	gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
-	gfx.drawText("Score:", 310, 130)
+	gfx.drawText(msg, 310, 130)
+	--gfx.drawText(shadStr, 290, 50)
+	--gfx.drawText(playStr, 290, 90)
 	gScore:draw(320, 160)
 
     turnCount -= 5
@@ -184,15 +193,69 @@ function pd.update()
 
 	if turnCount % 10 == 0 then
 		gScore:addOne()
-		shadow.setVals()
+		shadow:setVals(shadowMoveX, shadowMoveY)
+		shadowMoveX += 0.0014
+		shadowMoveY += 0.001
+		playStr = ""
+		playerArr = player:getPos()
+		for i = 1, 4 do
+			local playerDegree = playerArr[i]
+
+			playStr = playStr .. tostring(playerDegree) .. " "
+		end
 	end 
 
 	if turnCount % 5 == 0 then
-		if mainCloud:getScale() >= 12 then
+		if mainCloud:getScale() >= 25 then
+
 			mainCloud:setScale(.5)
 			shadow:setValScale(.02)
-			shadow:setValReset(centerX, centerY)
-			gScore:setScore(gScore:getScore()+100)
+			
+			shadowMoveX = 0.01
+			shadowMoveY = 0.005
+			
+			
+
+			shadowArr = shadow:getPos()
+			playerArr = player:getPos()
+
+			shadStr = ""
+			playStr = ""
+
+			for i = 1, 4 do
+				local playerDegree = playerArr[i]
+				local targetDegree = shadowArr[i]
+				
+
+				shadStr = shadStr .. tostring(targetDegree) .. " "
+
+				playStr = playStr .. tostring(playerDegree) .. " "
+				
+			
+				-- Calculate the difference in degrees in a circular way
+				local diff = (playerDegree - targetDegree + 360) % 360
+			
+				-- Check if the difference is within +/- 20 degrees, considering circular conditions
+				if diff <= 20 or diff >= 340 then
+					gScore:setScore(gScore:getScore()+100)
+					
+				else
+					gScore:setScore(0)
+					msg = "Fail!"
+					shadow:setValReset(centerX, centerY + 30)
+					break
+				end
+				
+				msg = "Success!"
+				shadow:setValReset(centerX, centerY + 30)
+
+
+				
+
+			end
+
+
+
 		else
 			mainCloud:setScale(mainCloud:getScale()*1.01)
 			shadow:setValScale(shadow:getValScale()*1.01)
@@ -215,11 +278,13 @@ function pd.update()
 			end
 		end
 	end
-	mainCloud:moveTo(centerX-mainCloud.width/2, centerY-mainCloud.width/2)
+	mainCloud:moveTo(centerX-mainCloud.width/2, centerY+ 30-mainCloud.width/2)
 	shadow:setScale(5)
 
 
 	--altClouds[1]:moveTo(altCenterX-altClouds[1].width/2, altCenterY-altClouds[1].width/2)
+
+
 
 
     -- Optional: Draw FPS, etc.
