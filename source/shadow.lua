@@ -144,10 +144,6 @@ function Shadow:update()
     pantLegLeft:setImage(pantLegLeft.animation:image())
     pantLegRight:setImage(pantLegRight.animation:image())
 
-    
-
-
-
     local crank_angle = floor(pd.getCrankPosition())
 
     leftArm:setScale(scaleVal)

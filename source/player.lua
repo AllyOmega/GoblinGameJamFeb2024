@@ -8,19 +8,19 @@ local leftArmImage = gfx.image.new('images/leftArm')
 local rightArmImage = gfx.image.new('images/rightArm')
 local leftLegImage = gfx.image.new('images/leftLeg')
 local rightLegImage = gfx.image.new('images/rightLeg')
-local playerBodyImage = gfx.image.new('images/playerBody')
+--local playerBodyImage = gfx.image.new('images/playerBody')
 
 local sleeveLeft = gfx.sprite.new()
 local sleeveRight = gfx.sprite.new()
 local pantLegLeft = gfx.sprite.new()
 local pantLegRight = gfx.sprite.new()
-local hair = gfx.sprite.new()
+--local hair = gfx.sprite.new()
 
 local leftArm = Player(x, y)
 local rightArm = Player(x, y)
 local leftLeg = Player(x, y)
 local rightLeg = Player(x, y)
-local playerBody = Player(x, y)
+--local playerBody = Player(x, y)
 
 local scaler = 1.01
 
@@ -85,12 +85,12 @@ function Player:init(x, y)
     -- playerBody:add()
 
 
-    hair:moveTo(x , y - 40)
-    hair:setCenter(.5,1)
-    hair:setZIndex(32767)
-    hair.imagetable = gfx.imagetable.new('images/hair')
-    hair.animation = gfx.animation.loop.new(100, hair.imagetable, true)
-    hair:add()
+    -- hair:moveTo(x , y - 40)
+    -- hair:setCenter(.5,1)
+    -- hair:setZIndex(32767)
+    -- hair.imagetable = gfx.imagetable.new('images/hair')
+    -- hair.animation = gfx.animation.loop.new(100, hair.imagetable, true)
+    -- hair:add()
 
     local leftArmPos = math.random(1,360)
     leftArm:setRotation(leftArmPos)
@@ -109,11 +109,6 @@ function Player:init(x, y)
     pantLegRight:setRotation(rightLegPos)
 
 
-
-
-
-
-
 end
 
 function Player:update()
@@ -122,10 +117,11 @@ function Player:update()
     sleeveRight:setImage(sleeveRight.animation:image())
     pantLegLeft:setImage(pantLegLeft.animation:image())
     pantLegRight:setImage(pantLegRight.animation:image())
-    hair:setImage(hair.animation:image())
+   --hair:setImage(hair.animation:image())
 
 
     local crank_angle = pd.getCrankPosition()
+    
 
     if (pd.buttonIsPressed(pd.kButtonUp) and (pd.buttonIsPressed(pd.kButtonLeft))) then
         leftArm:setRotation(crank_angle)
