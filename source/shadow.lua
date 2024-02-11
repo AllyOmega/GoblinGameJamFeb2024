@@ -32,7 +32,7 @@ local rightLegPosX = 0
 local rightLegPosY = 0
 
 
-local scaleVal = 0.083
+local scaleVal = 0.02
 
 local leftArmPos =  0
 local rightArmPos = 0
@@ -152,18 +152,22 @@ function Shadow:resetRotPos()
 end
 
 
-function Shadow:setVals(x,y)
-    leftArmPosX -= x
-    leftArmPosY -= y
+function Shadow:setVals(x,y, gameSpeed)
+ -- Assuming gameSpeed is a multiplier, e.g., 1.0 for normal speed, 2.0 for double speed, etc.
+ local adjustedX = x * (gameSpeed - 1)*100
+ local adjustedY = y * (gameSpeed - 1)*100
 
-    rightArmPosX += x
-    rightArmPosY -= y
+ leftArmPosX -= adjustedX * 1.6
+ leftArmPosY -= adjustedY
 
-    leftLegPosX -= x
-    leftLegPosY += y
+ rightArmPosX += adjustedX * 1.1
+ rightArmPosY -= adjustedY
 
-    rightLegPosX += x
-    rightLegPosY += y
+ leftLegPosX -= adjustedX
+ leftLegPosY += adjustedY
+
+ rightLegPosX += adjustedX
+ rightLegPosY += adjustedY
 end
 
 function Shadow:setValReset(x,y)
