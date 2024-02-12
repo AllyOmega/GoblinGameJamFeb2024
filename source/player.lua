@@ -130,29 +130,27 @@ function Player:update()
    --hair:setImage(hair.animation:image())
 
 
-    local crank_angle = pd.getCrankPosition()
+    local crank_angle, temp = pd.getCrankChange()
     
-
     if (pd.buttonIsPressed(pd.kButtonUp) and (pd.buttonIsPressed(pd.kButtonLeft))) then
-        leftArm:setRotation(crank_angle)
-        sleeveLeft:setRotation(crank_angle)
-        leftArmPos = crank_angle
+        leftArmPos = (leftArmPos + temp*.1)%360
+        leftArm:setRotation(leftArmPos)
+        sleeveLeft:setRotation(leftArmPos)
    end
     if (pd.buttonIsPressed(pd.kButtonUp) and (pd.buttonIsPressed(pd.kButtonRight))) then
-        rightArm:setRotation(crank_angle)
-        sleeveRight:setRotation(crank_angle)
-        rightArmPos = crank_angle
+        rightArmPos = (rightArmPos + temp*.1)%360
+        rightArm:setRotation(rightArmPos)
+        sleeveRight:setRotation(rightArmPos)
     end
     if (pd.buttonIsPressed(pd.kButtonDown) and (pd.buttonIsPressed(pd.kButtonLeft))) then
-        leftLeg:setRotation(crank_angle)
-        pantLegLeft:setRotation(crank_angle)
-        leftLegPos = crank_angle
-
+        leftLegPos = (leftLegPos + temp*.1)%360
+        leftLeg:setRotation(leftLegPos)
+        pantLegLeft:setRotation(leftLegPos)
     end
     if (pd.buttonIsPressed(pd.kButtonDown) and (pd.buttonIsPressed(pd.kButtonRight))) then
-        rightLeg:setRotation(crank_angle)
-        pantLegRight:setRotation(crank_angle)
-        rightLegPos = crank_angle
+        rightLegPos = (rightLegPos + temp*.1)%360
+        rightLeg:setRotation(rightLegPos)
+        pantLegRight:setRotation(rightLegPos)
     end
 end
 
