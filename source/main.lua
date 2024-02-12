@@ -21,6 +21,7 @@ local currentState = kGameState.initial
 
 local kGameInitialState, kGameGetReadyState, kGamePlayingState, kGamePausedState, kGameOverState = 0, 1, 2, 3, 4
 local gameState = kGameInitialState
+
 --
 
 
@@ -56,12 +57,12 @@ altCenterY = centerY
 turnCount = 100
 
 local speedLineUpdateCounter = 0
-local speedLineUpdateFrequency = 3
+local speedLineUpdateFrequency = 10
 local speedLineVariations = {}
 
 local msg = "Score:"
 
-local lives = 3
+local lives = 1
 
 local shadStr, playStr = "", ""
 
@@ -169,6 +170,7 @@ local function gameOver()
 	gfx.image.new('images/gameOver'):draw(centerX-75, centerY-20)
 	ticks=0
 
+
 end
 
 local function startGame()
@@ -176,6 +178,7 @@ local function startGame()
 	gameState = kGameGetReadyState
 	ticks = 0
 	gScore:setScore(0)
+
 	titleSprite:setImage(gfx.image.new('images/getReady'))
 	titleSprite:moveTo(centerX, centerY)
 	titleSprite:setZIndex(32767)
@@ -224,7 +227,7 @@ local player = Player(centerX, centerY)
 local shadow = Shadow(centerX, centerY + 30)
 
 function pd.update()
-	
+
 	ticks = ticks+1
 
 	if gameState == kGameInitialState then 
@@ -232,13 +235,13 @@ function pd.update()
 		gfx.setColor(gfx.kColorWhite)
 		gfx.fillRect(0, 0, screenWidth, screenHeight)
 		local startButton = gfx.image.new('images/startButton')
-		local y = centerY - startButton.height/2
+		local y = screenHeight/2 - startButton.height/2
 		if buttonDown == false then
 		
 			y -= 3
 		
 		end
-		startButton:draw(centerX - startButton.width/2, y)
+		startButton:draw(screenWidth/2- startButton.width/2, y)
 		gfx.setColor(gfx.kColorBlack)
 
 	elseif gameState == kGameGetReadyState then
@@ -251,6 +254,7 @@ function pd.update()
 		end
 	elseif gameState == kGamePlayingState then
 		
+	
 		spritelib.update()
 		pd.frameTimer.updateTimers()
 
@@ -309,7 +313,7 @@ function pd.update()
 		end
 		speedLineUpdateCounter += 1
 		
-		-- Drawing speed lines with current variations
+		--Drawing speed lines with current variations
 		for i = 1, numberOfSpeedLines do
 			local variation = speedLineVariations[i] or {offsetX = 0, offsetY = 0, length = speedLineLength}
 			local angle = (math.pi * 2) * (i / numberOfSpeedLines)
@@ -334,10 +338,10 @@ function pd.update()
 		
 		gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
 		
-		gfx.drawText(msg, 310, 130)
+		
 		--gfx.drawText(shadStr, 290, 50)
 		--gfx.drawText(playStr, 290, 90)
-		gScore:draw(320, 160)
+		
 
 		turnCount -= 5
 		turnCount %= 100
@@ -386,6 +390,8 @@ function pd.update()
 						gScore:setScore(math.max(gScore:getScore() - 200, 0))
 						--msg = "Fail!"
 						if lives == 0 then
+							
+							msg="Final Score: "
 							gameOver()
 						else
 							lives -= 1
@@ -421,6 +427,9 @@ function pd.update()
 
 		mainCloud:moveTo(centerX-mainCloud.width/2, centerY+30 - mainCloud.width/2)
 		shadow:setScale(5)
+
+		gScore:draw(320, 160)
+		gfx.drawText(msg, 300, 130)
 
 		-- Optional: Draw FPS, etc.
 		pd.drawFPS(0, 0)
@@ -459,12 +468,9 @@ function playdate.AButtonDown()
 	if gameState == kGameInitialState then
 		buttonDown = true
 	elseif gameState == kGameOverState and ticks > 5  then	-- the ticks thing is just so the player doesn't accidentally restart immediately
-
-		
 		lives = 3
-
+		msg = "Score:"
 		startGame()
-
 	elseif gameState == kGamePlayingState then
 		--flippy:up()		
 	end
@@ -474,6 +480,8 @@ function playdate.BButtonDown()
 	if gameState == kGameInitialState then
 		buttonDown = true
 	elseif gameState == kGameOverState and ticks > 5 then
+		lives = 3
+		msg = "Score:"
 		startGame()
 	elseif gameState == kGamePlayingState then
 		--flippy:up()
@@ -484,6 +492,8 @@ function playdate.AButtonUp()
 
 	if gameState == kGameInitialState then
 		buttonDown = false
+		lives = 3
+		msg = "Score:"
 		startGame()
 	end
 end
@@ -491,6 +501,8 @@ end
 function playdate.BButtonUp()
 	if gameState == kGameInitialState then
 		buttonDown = false
+		lives = 3
+		msg = "Score:"
 		startGame()
 	end
 
