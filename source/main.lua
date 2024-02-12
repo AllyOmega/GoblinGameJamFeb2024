@@ -26,7 +26,7 @@ local gameState = kGameInitialState
 
 
 
-local maxBackgroundPlanes = 1
+local maxBackgroundPlanes = 2
 local backgroundPlaneCount = 0
 local bgY = 0
 local bgH = 0
@@ -86,9 +86,9 @@ altClouds = {
 	Cloud(centerX-30, centerY-20, 0),
 	Cloud(centerX+10, centerY - 20, 0),
 	Cloud(centerX-30, centerY+10, 0),
-	Cloud(centerX+10, centerY+10, 0),
-	Cloud(centerX, centerY-30, 0),
-	Cloud(centerX+30, centerY, 0)
+	-- Cloud(centerX+10, centerY+10, 0),
+	-- Cloud(centerX, centerY-30, 0),
+	-- Cloud(centerX+30, centerY, 0)
 }
 
 
@@ -235,13 +235,16 @@ function pd.update()
 		gfx.setColor(gfx.kColorWhite)
 		gfx.fillRect(0, 0, screenWidth, screenHeight)
 		local startButton = gfx.image.new('images/startButton')
-		local y = screenHeight/2 - startButton.height/2
+
+		local y = centerY+2 - startButton.height/2
+    
 		if buttonDown == false then
 		
 			y -= 3
 		
 		end
-		startButton:draw(screenWidth/2- startButton.width/2, y)
+
+		startButton:draw(centerX + 60 - startButton.width/2, y)
 		gfx.setColor(gfx.kColorBlack)
 
 	elseif gameState == kGameGetReadyState then
