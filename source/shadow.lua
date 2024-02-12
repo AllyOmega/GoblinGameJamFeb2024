@@ -134,19 +134,19 @@ function Shadow:init(x, y)
 end
 
 function Shadow:resetRotPos() 
-    leftArmPos = 50 --math.random(1,360)
+    leftArmPos = math.random(360)
     leftArm:setRotation(leftArmPos)
     sleeveLeft:setRotation(leftArmPos)
     
-    rightArmPos = 50 
+    rightArmPos = math.random(360)
     rightArm:setRotation(rightArmPos)
     sleeveRight:setRotation(rightArmPos)
     
-    leftLegPos = 50 
+    leftLegPos = math.random(360)
     leftLeg:setRotation(leftLegPos)
     pantLegLeft:setRotation(leftLegPos)
     
-    rightLegPos = 50
+    rightLegPos = math.random(360)
     rightLeg:setRotation(rightLegPos)
     pantLegRight:setRotation(rightLegPos)
 end
